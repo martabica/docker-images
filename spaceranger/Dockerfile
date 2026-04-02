@@ -26,10 +26,10 @@ ARG SPACERANGER_URL
 
 WORKDIR /opt
 
-RUN curl -L "$SPACERANGER_URL" -o spaceranger.tar.gz && 
-tar -xzf spaceranger.tar.gz && 
-mv spaceranger-* spaceranger && 
-rm spaceranger.tar.gz
+RUN curl -L "$SPACERANGER_URL" -o spaceranger.tar.gz && \
+    tar -xzf spaceranger.tar.gz && \
+    mv spaceranger-* spaceranger && \
+    rm spaceranger.tar.gz
 
 ENV PATH="/opt/spaceranger:$PATH"
 
