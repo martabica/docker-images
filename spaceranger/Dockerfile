@@ -3,22 +3,22 @@ FROM centos:centos7
 
 # Install dependencies
 
-RUN yum -y update && 
-yum -y install 
-curl 
-tar 
-gzip 
-bzip2 
-unzip 
-which 
-libgomp 
-libX11 
-libXext 
-libSM 
-libICE 
-libxcb 
-mesa-libGL 
-&& yum clean all
+RUN yum -y update && \
+    yum -y install \
+        curl \
+        tar \
+        gzip \
+        bzip2 \
+        unzip \
+        which \
+        libgomp \
+        libX11 \
+        libXext \
+        libSM \
+        libICE \
+        libxcb \
+        mesa-libGL \
+    && yum clean all
 
 # ---- Space Ranger ----
 
