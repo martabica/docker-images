@@ -1,5 +1,6 @@
 FROM satijalab/seurat:5.4.0
 
+
 # Install HDF5 system libraries
 RUN apt-get update && apt-get install -y \
     libhdf5-dev \
