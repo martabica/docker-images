@@ -1,0 +1,37 @@
+name: Build spatial-qc
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'spatial-qc/Dockerfile'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_MB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_MB_PASS }}
+
+    - name: Set up Docker Buildx 
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./spatial-qc 
+        file: ./spatial-qc/Dockerfile  
+        push: true
+        platforms: linux/amd64
+        tags: ${{ secrets.DOCKERHUB_MB_USERNAME }}/spatial-qc:1.0
+
+
+        
