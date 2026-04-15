@@ -2,13 +2,15 @@ FROM satijalab/seurat:5.4.0
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Use a proper cache location
+# Stable cache location
 ENV XDG_CACHE_HOME=/cache
 
-# Create cache dir with open permissions
-RUN mkdir -p /cache && chmod -R 777 /cache
+# Create FULL gypsum directory tree + open permissions
+RUN mkdir -p /cache/gypsum/status/celldex/hpca && \
+    mkdir -p /cache/gypsum/files && \
+    chmod -R 777 /cache
 
-# Install HDF5 system libraries
+# Install system deps
 RUN apt-get update && apt-get install -y \
     libhdf5-dev \
     libhdf5-103-1 \
@@ -22,5 +24,5 @@ RUN R -e "install.packages('hdf5r', repos='https://cloud.r-project.org')"
 RUN R -e "install.packages('BiocManager', repos='https://cloud.r-project.org')" && \
     R -e "BiocManager::install(c('SingleR','celldex'), ask=FALSE, update=FALSE)"
 
-# Pre-create cache structure safely
-RUN R -e "dir.create('/cache/gypsum', recursive=TRUE, showWarnings=FALSE)"
+# Force-create deeper lock path at build time (this is the missing fix)
+RUN R -e "dir.create('/cache/gypsum/status/celldex/hpca/2024-02-26', recursive=TRUE, showWarnings=FALSE)"
