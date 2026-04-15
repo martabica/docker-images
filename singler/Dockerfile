@@ -1,15 +1,12 @@
 FROM satijalab/seurat:5.4.0
 
-# Avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Fix cache location (critical for celldex)
-ENV XDG_CACHE_HOME=/tmp/.cache
+# Use a proper cache location
+ENV XDG_CACHE_HOME=/cache
 
-# Create full cache structure
-RUN mkdir -p /tmp/.cache/gypsum/status/celldex/hpca && \
-    mkdir -p /tmp/.cache/gypsum/files && \
-    chmod -R 777 /tmp/.cache
+# Create cache dir with open permissions
+RUN mkdir -p /cache && chmod -R 777 /cache
 
 # Install HDF5 system libraries
 RUN apt-get update && apt-get install -y \
@@ -18,15 +15,12 @@ RUN apt-get update && apt-get install -y \
     libhdf5-hl-100 \
     && rm -rf /var/lib/apt/lists/*
 
-# Reinstall hdf5r so it links correctly
+# Fix hdf5r
 RUN R -e "install.packages('hdf5r', repos='https://cloud.r-project.org')"
 
-# Install Bioconductor + SingleR + celldex
+# Install Bioconductor + packages
 RUN R -e "install.packages('BiocManager', repos='https://cloud.r-project.org')" && \
     R -e "BiocManager::install(c('SingleR','celldex'), ask=FALSE, update=FALSE)"
 
-# Pre-download celldex reference to avoid runtime locking issues
-RUN R -e "dir.create('/tmp/.cache/gypsum/status/celldex/hpca', recursive=TRUE, showWarnings=FALSE); \
-          library(celldex); \
-          ref <- celldex::HumanPrimaryCellAtlasData(); \
-          print('celldex reference cached successfully')"
+# Pre-create cache structure safely
+RUN R -e "dir.create('/cache/gypsum', recursive=TRUE, showWarnings=FALSE)"
