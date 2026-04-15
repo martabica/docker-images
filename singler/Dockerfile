@@ -17,5 +17,6 @@ RUN R -e "install.packages('BiocManager', repos='https://cloud.r-project.org')" 
     R -e "BiocManager::install('SingleR', ask=FALSE, update=FALSE)"
 
 # Copy pre-downloaded reference into image
-COPY hpca_part1.rds /opt/reference/hpca_part1.rds
-COPY hpca_part2.rds /opt/reference/hpca_part2.rds
+RUN mkdir -p /opt/reference
+COPY hpca_part1.rds /opt/reference/
+COPY hpca_part2.rds /opt/reference/
