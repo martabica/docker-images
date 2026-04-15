@@ -5,7 +5,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Fix cache location (critical for celldex)
 ENV XDG_CACHE_HOME=/tmp/.cache
-RUN mkdir -p /tmp/.cache
+
+# Create full cache structure
+RUN mkdir -p /tmp/.cache/gypsum/status/celldex/hpca && \
+    mkdir -p /tmp/.cache/gypsum/files && \
+    chmod -R 777 /tmp/.cache
 
 # Install HDF5 system libraries
 RUN apt-get update && apt-get install -y \
@@ -20,3 +24,9 @@ RUN R -e "install.packages('hdf5r', repos='https://cloud.r-project.org')"
 # Install Bioconductor + SingleR + celldex
 RUN R -e "install.packages('BiocManager', repos='https://cloud.r-project.org')" && \
     R -e "BiocManager::install(c('SingleR','celldex'), ask=FALSE, update=FALSE)"
+
+# Pre-download celldex reference to avoid runtime locking issues
+RUN R -e "dir.create('/tmp/.cache/gypsum/status/celldex/hpca', recursive=TRUE, showWarnings=FALSE); \
+          library(celldex); \
+          ref <- celldex::HumanPrimaryCellAtlasData(); \
+          print('celldex reference cached successfully')"
